@@ -115,3 +115,4 @@ volumes:
 
 networks:
   lava_network:
+    name: lava_metrics_network
