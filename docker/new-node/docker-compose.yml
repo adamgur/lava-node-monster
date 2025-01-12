@@ -44,12 +44,19 @@ services:
       dasel put -f /lava/.lava/config/config.toml -t string -v 1s 'consensus.timeout_precommit_delta' &&
       dasel put -f /lava/.lava/config/config.toml -t string -v 15s 'consensus.timeout_commit' &&
       dasel put -f /lava/.lava/config/config.toml -t string -v false 'consensus.skip_timeout_commit' &&
-
       dasel put -f /lava/.lava/config/config.toml -t string -v true 'rosetta.enable' &&
       dasel put -f /lava/.lava/config/config.toml -t string -v \"tcp://0.0.0.0:26657\" 'rpc.laddr' &&
+      dasel put -f /lava/.lava/config/config.toml -t bool -v true 'instrumentation.prometheus' &&
+
       dasel put -f /lava/.lava/config/app.toml -t string -v \"0.0.0.0:9090\" 'grpc.address' &&
       dasel put -f /lava/.lava/config/app.toml -t string -v \"tcp://0.0.0.0:1317\" 'api.address' &&
-      dasel put -f /lava/.lava/config/app.toml -t string -v true 'api.enable'
+      dasel put -f /lava/.lava/config/app.toml -t string -v true 'api.enable' &&
+      dasel put -f /lava/.lava/config/app.toml -t bool -v true 'telemetry.enabled' &&
+      dasel put -f /lava/.lava/config/app.toml -t string -v \"lava-node\" 'telemetry.service-name' &&
+      dasel put -f /lava/.lava/config/app.toml -t bool -v true 'telemetry.enable-hostname' &&
+      dasel put -f /lava/.lava/config/app.toml -t bool -v true 'telemetry.enable-service-label' &&
+      dasel put -f /lava/.lava/config/app.toml -t int -v 0 'telemetry.prometheus-retention-time' &&
+      dasel put -f /lava/.lava/config/app.toml -t string -v \"0.0.0.0:26660\" 'telemetry.prometheus-listen-addr'
       "
     volumes:
       - lava_data:/lava
@@ -70,6 +77,7 @@ services:
       - "${LAVA_NODE_PORT_GRPC_WEB:-9091}:9091"
       - "${LAVA_NODE_PORT_P2P:-26656}:26656"
       - "${LAVA_NODE_PORT_RPC:-26657}:26657"
+      - "${LAVA_NODE_PORT_METRICS:-26660}:26660"
     volumes:
       - lava_data:/lava
     networks:
